@@ -1,85 +1,55 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FREEGOAT - Painel Administrativo</title>
-  <link rel="icon" type="image/png" href="logo/freegoat-logo.png">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FREEGOAT - Dashboard Admin</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      background-color: #f5f5f5;
+      background-color: #f2f2f2;
       text-align: center;
-    }
-    img {
-      width: 100px;
-      margin-bottom: 20px;
+      padding: 40px;
     }
     h1 {
-      margin-bottom: 20px;
+      color: #333;
+    }
+    .card {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      padding: 20px;
+      margin: 20px auto;
+      max-width: 400px;
     }
     button {
       background-color: black;
       color: white;
-      padding: 12px 24px;
-      font-size: 16px;
+      padding: 10px 20px;
       border: none;
       border-radius: 5px;
       cursor: pointer;
-    }
-    #status {
-      margin-top: 20px;
-      color: red;
+      font-size: 16px;
     }
   </style>
 </head>
 <body>
-  <img src="logo/freegoat-logo.png" alt="Logo FREEGOAT">
-  <h1>FREEGOAT - Painel Administrativo</h1>
-  <button id="loginButton">Login com Phantom</button>
-  <div id="status"></div>
-
+  <h1>Bem-vindo, Administrador 🐐</h1>
+  <div class="card">
+    <p>Este é o painel do administrador da plataforma FREEGOAT.</p>
+    <p>Funcionalidades futuras serão exibidas aqui.</p>
+    <button onclick="logout()">Desconectar</button>
+  </div>
   <script>
-    async function loginWithPhantom() {
-      const status = document.getElementById('status');
-      try {
-        const provider = window.phantom?.solana;
-        if (!provider?.isPhantom) {
-          status.innerText = "Carteira Phantom não encontrada. Instale a extensão para continuar.";
-          return;
-        }
-
-        const resp = await provider.connect();
-        const wallet = resp.publicKey.toString();
-
-        const response = await fetch("https://freegoat-backend.onrender.com/adminLogin", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ wallet })
-        });
-
-        const result = await response.json();
-
-        if (result.success) {
-          status.style.color = "green";
-          status.innerText = "✅ Acesso concedido. Bem-vindo, administrador!";
-          // Aqui você pode redirecionar ou exibir funcionalidades do painel
-        } else {
-          status.innerText = "❌ Acesso negado. Carteira não autorizada.";
-        }
-      } catch (error) {
-        console.error(error);
-        status.innerText = "Erro ao conectar à carteira Phantom.";
-      }
+    const wallet = localStorage.getItem("adminWallet");
+    if (!wallet) {
+      alert("Acesso não autorizado.");
+      window.location.href = "/";
     }
-
-    document.getElementById("loginButton").addEventListener("click", loginWithPhantom);
+    function logout() {
+      localStorage.removeItem("adminWallet");
+      window.location.href = "/";
+    }
   </script>
 </body>
 </html>
