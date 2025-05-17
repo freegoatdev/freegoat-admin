@@ -1,53 +1,71 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FREEGOAT - Dashboard Admin</title>
+  <title>Painel Administrativo FREEGOAT</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #f2f2f2;
+      background-color: #f4f4f4;
       text-align: center;
-      padding: 40px;
+      padding-top: 100px;
     }
-    h1 {
-      color: #333;
-    }
-    .card {
-      background-color: white;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-      padding: 20px;
-      margin: 20px auto;
-      max-width: 400px;
+    .container {
+      background: white;
+      border-radius: 10px;
+      padding: 30px;
+      display: inline-block;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
     button {
+      padding: 10px 20px;
+      font-size: 16px;
       background-color: black;
       color: white;
-      padding: 10px 20px;
       border: none;
       border-radius: 5px;
       cursor: pointer;
-      font-size: 16px;
+    }
+    button:hover {
+      background-color: #333;
+    }
+    .goat {
+      font-size: 30px;
     }
   </style>
 </head>
 <body>
-  <h1>Bem-vindo, Administrador 🐐</h1>
-  <div class="card">
+  <div class="container" id="admin-panel" style="display: none;">
+    <h1>Bem-vindo, Administrador 🐐</h1>
     <p>Este é o painel do administrador da plataforma FREEGOAT.</p>
     <p>Funcionalidades futuras serão exibidas aqui.</p>
     <button onclick="logout()">Desconectar</button>
   </div>
+
+  <div class="container" id="unauthorized" style="display: none;">
+    <h2>Acesso não autorizado</h2>
+    <p>Você não tem permissão para acessar esta página.</p>
+    <button onclick="logout()">Tentar novamente</button>
+  </div>
+
   <script>
-    const wallet = localStorage.getItem("adminWallet");
-    if (!wallet) {
-      alert("Acesso não autorizado.");
-      window.location.href = "/";
+    const adminWallet = "DvfKW8vupWzuAH58P6Tws87FpZNUUpfeqbidNRgev6m9";
+    const walletKey = Object.keys(localStorage).find(k => k.includes("wallet"));
+    const walletValue = walletKey ? localStorage.getItem(walletKey) : null;
+
+    if (walletValue && walletValue.includes(adminWallet)) {
+      document.getElementById("admin-panel").style.display = "block";
+    } else {
+      document.getElementById("unauthorized").style.display = "block";
     }
+
     function logout() {
-      localStorage.removeItem("adminWallet");
+      if (walletKey) {
+        localStorage.removeItem(walletKey);
+      }
+      sessionStorage.clear();
       window.location.href = "/";
     }
   </script>
