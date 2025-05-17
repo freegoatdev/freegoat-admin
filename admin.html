@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <title>FREEGOAT - Painel Administrativo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href="/logo/freegoat-logo.ico" />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        background-color: #f9f9f9;
+        margin: 0;
+        padding: 40px;
+      }
+      img {
+        width: 120px;
+        margin-bottom: 20px;
+      }
+      h1 {
+        font-size: 2rem;
+      }
+      button {
+        padding: 10px 20px;
+        font-size: 1rem;
+        margin-top: 20px;
+        cursor: pointer;
+        background-color: black;
+        color: white;
+        border: none;
+        border-radius: 6px;
+      }
+      #status {
+        color: red;
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <img src="/logo/freegoat-logo.png" alt="Logotipo FREEGOAT" />
+    <h1>FREEGOAT - Painel Administrativo</h1>
+    <button onclick="connectWallet()">Login com Phantom</button>
+    <div id="status"></div>
+
+    <script>
+      async function connectWallet() {
+        try {
+          const provider = window?.phantom?.solana;
+          if (!provider?.isPhantom) {
+            document.getElementById("status").textContent =
+              "Carteira Phantom não encontrada. Instale a extensão para continuar.";
+            return;
+          }
+
+          const resp = await provider.connect();
+          document.getElementById("status").textContent =
+            "Conectado com sucesso: " + resp.publicKey.toString();
+        } catch (err) {
+          document.getElementById("status").textContent =
+            "Erro ao conectar carteira.";
+        }
+      }
+    </script>
+  </body>
+</html>
