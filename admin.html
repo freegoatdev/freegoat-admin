@@ -1,2 +1,79 @@
+
 <!DOCTYPE html>
-<html><head><title>FREEGOAT Admin</title></head><body>Admin painel ativo.</body></html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FREEGOAT Admin</title>
+  <link rel="icon" href="logo/freegoat-logo.png" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      height: 100vh;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+    .container {
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 6px;
+      border: none;
+      background-color: #333;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #444;
+    }
+    .status {
+      margin-top: 1rem;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Administração FREEGOAT</h1>
+    <p>Conecte sua Phantom Wallet para acessar o painel</p>
+    <button onclick="connectWallet()">Conectar Wallet</button>
+    <div class="status" id="status"></div>
+  </div>
+
+  <script>
+    const ADMIN_WALLET = "DvfKW8vupWzuAH58P6Tws87FpZNUUpfeqbidNRgev6m9";
+
+    async function connectWallet() {
+      const statusEl = document.getElementById("status");
+      if (!window.solana || !window.solana.isPhantom) {
+        statusEl.innerText = "Phantom Wallet não detectada!";
+        return;
+      }
+
+      try {
+        const resp = await window.solana.connect();
+        const userWallet = resp.publicKey.toString();
+        if (userWallet === ADMIN_WALLET) {
+          statusEl.innerText = "Acesso autorizado. Bem-vindo, administrador!";
+          window.location.href = "/admin-dashboard.html";
+        } else {
+          statusEl.innerText = "Acesso negado: esta carteira não possui permissões administrativas.";
+        }
+      } catch (err) {
+        statusEl.innerText = "Erro ao conectar a wallet.";
+      }
+    }
+  </script>
+</body>
+</html>
