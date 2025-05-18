@@ -52,12 +52,10 @@
     <h1><strong>FREEGOAT</strong></h1>
     <p>Conecte-se com sua carteira Phantom para continuar:</p>
     <button id="loginBtn">Login com Phantom</button>
-    <button id="logoutBtn">Desconectar</button>
   </div>
 
   <script>
     const loginBtn = document.getElementById('loginBtn');
-    const logoutBtn = document.getElementById('logoutBtn');
 
     async function connectWallet() {
       if (!window.solana || !window.solana.isPhantom) {
@@ -90,23 +88,14 @@
       }
     }
 
-    function logoutWallet() {
-      localStorage.removeItem("walletAddress");
-      alert("Você se desconectou.");
-      location.reload();
-    }
-
     loginBtn.onclick = connectWallet;
-    logoutBtn.onclick = logoutWallet;
 
-    // Exibe o botão correto com base no login
+    // Exibir ou ocultar botão de login com base na autenticação
     const walletAddress = localStorage.getItem("walletAddress");
     if (walletAddress) {
       loginBtn.style.display = "none";
-      logoutBtn.style.display = "inline-block";
     } else {
       loginBtn.style.display = "inline-block";
-      logoutBtn.style.display = "none";
     }
   </script>
 </body>
