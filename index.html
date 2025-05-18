@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -5,9 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>FREEGOAT</title>
   <link rel="icon" type="image/x-icon" href="favicon.ico">
-  <script src="https://unpkg.com/@solana/wallet-adapter-wallets"></script>
-  <script src="https://unpkg.com/@solana/wallet-adapter-base"></script>
-  <script src="https://unpkg.com/@solana/wallet-adapter-wallets/lib/phantom.js"></script>
   <style>
     body {
       margin: 0;
@@ -44,6 +42,7 @@
       border: none;
       border-radius: 6px;
       cursor: pointer;
+      margin: 5px;
     }
   </style>
 </head>
@@ -53,10 +52,12 @@
     <h1><strong>FREEGOAT</strong></h1>
     <p>Conecte-se com sua carteira Phantom para continuar:</p>
     <button id="loginBtn">Login com Phantom</button>
+    <button id="logoutBtn">Desconectar</button>
   </div>
 
   <script>
     const loginBtn = document.getElementById('loginBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
 
     async function connectWallet() {
       if (!window.solana || !window.solana.isPhantom) {
@@ -79,6 +80,7 @@
 
         const result = await res.json();
         if (result.success) {
+          localStorage.setItem("walletAddress", resp.publicKey.toString());
           window.location.href = "admin.html";
         } else {
           alert("Acesso não autorizado.");
@@ -88,7 +90,24 @@
       }
     }
 
+    function logoutWallet() {
+      localStorage.removeItem("walletAddress");
+      alert("Você se desconectou.");
+      location.reload();
+    }
+
     loginBtn.onclick = connectWallet;
+    logoutBtn.onclick = logoutWallet;
+
+    // Exibe o botão correto com base no login
+    const walletAddress = localStorage.getItem("walletAddress");
+    if (walletAddress) {
+      loginBtn.style.display = "none";
+      logoutBtn.style.display = "inline-block";
+    } else {
+      loginBtn.style.display = "inline-block";
+      logoutBtn.style.display = "none";
+    }
   </script>
 </body>
 </html>
