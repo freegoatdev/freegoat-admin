@@ -1,23 +1,89 @@
 
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>FREEGOAT - Plataforma Web3</title>
-  <link rel="icon" type="image/png" href="favicon.png">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FREEGOAT - Painel Administrativo</title>
+  <link rel="icon" type="image/png" href="https://freegoat.io/favicon.png" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 4rem;
+      background-color: #f2f2f2;
+    }
+    .container {
+      background: white;
+      padding: 2rem;
+      max-width: 400px;
+      margin: auto;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    }
+    img {
+      width: 80px;
+      margin-bottom: 1rem;
+    }
+    button {
+      background-color: black;
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      font-size: 1rem;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    #admin-panel {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="login-section">
+    <img src="https://freegoat.io/logo.png" alt="FREEGOAT Logo" />
+    <h1>FREEGOAT Plataforma</h1>
+    <p>Conecte-se com sua carteira Phantom para continuar:</p>
+    <button onclick="connectWallet()">Login com Phantom</button>
+  </div>
+
+  <div class="container" id="admin-panel">
+    <h2>Bem-vindo, Administrador 🐐</h2>
+    <p>Este é o painel administrativo da plataforma FREEGOAT.</p>
+    <button onclick="disconnect()">Desconectar</button>
+  </div>
+
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const userLang = navigator.language || navigator.userLanguage;
-      if (userLang.startsWith("en")) {
-        document.getElementById("content").innerText = "Welcome to FREEGOAT!";
-      } else {
-        document.getElementById("content").innerText = "Bem-vindo ao FREEGOAT!";
+    const adminWallet = "DvfKW8vupWzuAH58P6Tws87FpZNUUpfeqbidNRgev6m9";
+
+    async function connectWallet() {
+      try {
+        const resp = await window.solana.connect();
+        const wallet = resp.publicKey.toString();
+
+        if (wallet === adminWallet) {
+          document.getElementById('login-section').style.display = 'none';
+          document.getElementById('admin-panel').style.display = 'block';
+        } else {
+          alert("Acesso não autorizado.");
+        }
+      } catch (err) {
+        console.error(err);
+        alert("Falha ao conectar com a carteira.");
+      }
+    }
+
+    function disconnect() {
+      document.getElementById('admin-panel').style.display = 'none';
+      document.getElementById('login-section').style.display = 'block';
+    }
+
+    window.addEventListener("load", () => {
+      if (window.solana && window.solana.isPhantom) {
+        window.solana.on("connect", () => console.log("Conectado!"));
+        window.solana.on("disconnect", () => console.log("Desconectado!"));
       }
     });
   </script>
-</head>
-<body>
-  <h1 id="content">Carregando...</h1>
 </body>
 </html>
