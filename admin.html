@@ -1,10 +1,11 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin - FREEGOAT</title>
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <title>FREEGOAT</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
   <style>
     body {
       margin: 0;
@@ -23,7 +24,7 @@
     }
     h1 {
       margin: 0;
-      font-size: 26px;
+      font-size: 28px;
     }
     p {
       color: #555;
@@ -37,20 +38,25 @@
       border: none;
       border-radius: 6px;
       cursor: pointer;
+      margin-top: 20px;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Bem-vindo, Administrador 🐐</h1>
+    <h1><strong>Bem-vindo, Administrador 🐐</strong></h1>
     <p>Este é o painel administrativo da plataforma FREEGOAT.</p>
-    <button onclick="logout()">Desconectar</button>
+    <button id="logoutBtn">Desconectar</button>
   </div>
 
   <script>
-    function logout() {
+    const logoutBtn = document.getElementById("logoutBtn");
+
+    logoutBtn.addEventListener("click", () => {
+      localStorage.removeItem("walletAddress");
+      alert("Você se desconectou com sucesso.");
       window.location.href = "index.html";
-    }
+    });
   </script>
 </body>
 </html>
