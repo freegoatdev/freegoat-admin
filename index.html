@@ -63,6 +63,14 @@
         return;
       }
 
+      const walletAddress = localStorage.getItem("walletAddress");
+      if (walletAddress) {
+        alert("Você se desconectou com sucesso.");
+        localStorage.removeItem("walletAddress");
+        location.reload();
+        return;
+      }
+
       try {
         const resp = await window.solana.connect({ onlyIfTrusted: false });
 
@@ -79,6 +87,7 @@
         const result = await res.json();
         if (result.success) {
           localStorage.setItem("walletAddress", resp.publicKey.toString());
+          alert("Login realizado com sucesso!");
           window.location.href = "admin.html";
         } else {
           alert("Acesso não autorizado.");
@@ -90,12 +99,12 @@
 
     loginBtn.onclick = connectWallet;
 
-    // Exibir ou ocultar botão de login com base na autenticação
+    // Atualiza botão conforme login
     const walletAddress = localStorage.getItem("walletAddress");
     if (walletAddress) {
-      loginBtn.style.display = "none";
+      loginBtn.textContent = "Desconectar";
     } else {
-      loginBtn.style.display = "inline-block";
+      loginBtn.textContent = "Login com Phantom";
     }
   </script>
 </body>
