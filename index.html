@@ -5,107 +5,76 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>FREEGOAT</title>
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      background-color: #f4f4f4;
-      font-family: Arial, sans-serif;
-    }
-    .container {
-      max-width: 500px;
-      margin: 100px auto;
-      padding: 40px;
-      background-color: white;
-      border-radius: 20px;
-      text-align: center;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    }
-    .logo {
-      width: 100px;
-      margin-bottom: 20px;
-    }
-    h1 {
-      margin: 0;
-      font-size: 28px;
-    }
-    p {
-      color: #555;
-      margin: 16px 0;
-    }
-    button {
-      padding: 12px 24px;
-      font-size: 16px;
-      background-color: black;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      margin: 5px;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="manifest" href="manifest.json" />
 </head>
 <body>
-  <div class="container">
-    <img src="freegoat-logo.png" alt="FREEGOAT Logo" class="logo" />
-    <h1><strong>FREEGOAT</strong></h1>
-    <p>Conecte-se com sua carteira Phantom para continuar:</p>
-    <button id="loginBtn">Login com Phantom</button>
+  <header>
+    <img src="logo/freegoat-logo.png" alt="FREEGOAT Logo" class="header-logo">
+    <span id="platform-status">Conectar para interagir com a plataforma</span>
+    <button id="connectButton" class="header-button">Conectar</button>
+  </header>
+
+  <div id="walletModal" class="modal hidden">
+    <div class="modal-content">
+      <img src="logo/freegoat-logo.png" alt="Logo" class="modal-logo">
+      <h2>Entre com sua carteira</h2>
+      <p>Escolha uma das opções abaixo:</p>
+      <button class="wallet-button" id="phantomConnect">
+        <img src="logo/phantom-logo.png" alt="Phantom" class="wallet-icon">
+        Conectar com Phantom
+      </button>
+      <button class="wallet-button" onclick="alert('FREEGOAT ainda está em desenvolvimento.')">
+        <img src="logo/freegoat-logo.png" alt="FREEGOAT" class="wallet-icon">
+        Conectar com FREEGOAT
+      </button>
+    </div>
   </div>
 
   <script>
-    const loginBtn = document.getElementById('loginBtn');
+    const connectButton = document.getElementById("connectButton");
+    const walletModal = document.getElementById("walletModal");
+    const platformStatus = document.getElementById("platform-status");
+    const phantomConnect = document.getElementById("phantomConnect");
 
-    async function connectWallet() {
-      if (!window.solana || !window.solana.isPhantom) {
-        alert("Phantom Wallet não detectada.");
-        return;
+    let walletConnected = false;
+
+    connectButton.addEventListener("click", () => {
+      if (walletConnected) {
+        walletConnected = false;
+        connectButton.textContent = "Conectar";
+        platformStatus.textContent = "Conectar para interagir com a plataforma";
+      } else {
+        walletModal.classList.remove("hidden");
       }
+    });
 
-      const walletAddress = localStorage.getItem("walletAddress");
-      if (walletAddress) {
-        alert("Você se desconectou com sucesso.");
-        localStorage.removeItem("walletAddress");
-        location.reload();
-        return;
-      }
+    phantomConnect.addEventListener("click", async () => {
+  if (window.solana && window.solana.isPhantom) {
+    try {
+      const resp = await window.solana.connect();
+      const wallet = resp.publicKey.toString();
 
-      try {
-        const resp = await window.solana.connect({ onlyIfTrusted: false });
+      const message = "Autenticar login na plataforma FREEGOAT";
+      const encodedMessage = new TextEncoder().encode(message);
+      const signed = await window.solana.signMessage(encodedMessage, "utf8");
 
-        const message = "Confirmar login como administrador do FREEGOAT";
-        const encodedMessage = new TextEncoder().encode(message);
-        const signed = await window.solana.signMessage(encodedMessage, "utf8");
+      // Armazenar localmente (opcional)
+      localStorage.setItem("walletAddress", wallet);
+      localStorage.setItem("signature", JSON.stringify(signed));
 
-        const res = await fetch("https://freegoat-backend.onrender.com/adminLogin", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ wallet: resp.publicKey.toString() })
-        });
-
-        const result = await res.json();
-        if (result.success) {
-          localStorage.setItem("walletAddress", resp.publicKey.toString());
-          alert("Login realizado com sucesso!");
-          window.location.href = "admin.html";
-        } else {
-          alert("Acesso não autorizado.");
-        }
-      } catch (err) {
-        alert("Login cancelado ou falhou.");
-      }
+      walletConnected = true;
+      connectButton.textContent = "Desconectar";
+      platformStatus.textContent = "Você está interagindo com a plataforma";
+      walletModal.classList.add("hidden");
+    } catch (err) {
+      alert("Conexão com Phantom Wallet cancelada.");
     }
+  } else {
+    alert("Phantom Wallet não está instalada.");
+  }
+});
 
-    loginBtn.onclick = connectWallet;
-
-    // Atualiza botão conforme login
-    const walletAddress = localStorage.getItem("walletAddress");
-    if (walletAddress) {
-      loginBtn.textContent = "Desconectar";
-    } else {
-      loginBtn.textContent = "Login com Phantom";
-    }
   </script>
 </body>
 </html>
