@@ -5,6 +5,7 @@ const walletModal = document.getElementById("wallet-modal");
 const phantomConnect = document.getElementById("phantomConnect");
 
 let walletConnected = false;
+const adminWallet = "DvfKW8vupWzuAH58P6Tws87FpZNUUpfeqbidNRgev6m9";
 
 connectButton.addEventListener("click", () => {
   if (walletConnected) {
@@ -26,6 +27,11 @@ phantomConnect.addEventListener("click", async () => {
       const connectResponse = await provider.connect();
       const wallet = connectResponse.publicKey.toString();
 
+      if (wallet !== adminWallet) {
+        alert("Apenas a carteira do administrador pode acessar esta área.");
+        return;
+      }
+
       const message = "Autenticar login na plataforma FREEGOAT";
       const encodedMessage = new TextEncoder().encode(message);
       const signedMessage = await provider.signMessage(encodedMessage, "utf8");
@@ -37,6 +43,8 @@ phantomConnect.addEventListener("click", async () => {
       connectButton.textContent = "Desconectar";
       platformStatus.textContent = "Você está interagindo com a plataforma";
       walletModal.classList.add("hidden");
+
+      window.location.href = "admin.html";
 
     } catch (error) {
       alert("Erro ao conectar ou assinar com a Phantom.");
