@@ -4,59 +4,29 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FREEGOAT</title>
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      background-color: #f4f4f4;
-      font-family: Arial, sans-serif;
-    }
-    .container {
-      max-width: 500px;
-      margin: 100px auto;
-      padding: 40px;
-      background-color: white;
-      border-radius: 20px;
-      text-align: center;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    }
-    h1 {
-      margin: 0;
-      font-size: 28px;
-    }
-    p {
-      color: #555;
-      margin: 16px 0;
-    }
-    button {
-      padding: 12px 24px;
-      font-size: 16px;
-      background-color: black;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      margin-top: 20px;
-    }
-  </style>
+  <title>FREEGOAT - Admin</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="container">
-    <h1><strong>Bem-vindo, Administrador 🐐</strong></h1>
-    <p>Este é o painel administrativo da plataforma FREEGOAT.</p>
-    <button id="logoutBtn">Desconectar</button>
-  </div>
+  <header>
+    <img src="logo/freegoat-logo.png" alt="FREEGOAT Logo" class="header-logo">
+    <span id="platform-status">Você está interagindo com a plataforma</span>
+    <span class="admin-indicator">Administrador</span>
+  </header>
+
+  <main style="padding: 100px 20px 40px; text-align: center;">
+    <h1>Painel de Administração 🐐</h1>
+    <p>Em breve você poderá visualizar usuários, gerenciar NFTs e configurar o ecossistema FREEGOAT.</p>
+  </main>
 
   <script>
-    const logoutBtn = document.getElementById("logoutBtn");
+    const wallet = localStorage.getItem("walletAddress");
+    const adminWallet = "DvfKW8vupWzuAH58P6Tws87FpZNUUpfeqbidNRgev6m9";
 
-    logoutBtn.addEventListener("click", () => {
-      localStorage.removeItem("walletAddress");
-      alert("Você se desconectou com sucesso.");
+    if (wallet !== adminWallet) {
+      alert("Acesso negado. Você não é o administrador.");
       window.location.href = "index.html";
-    });
+    }
   </script>
 </body>
 </html>
